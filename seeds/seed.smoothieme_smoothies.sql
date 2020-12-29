@@ -1,8 +1,8 @@
-INSERT INTO smoothies (
+INSERT INTO smoothieme_smoothies (
         title,
         fruit,
         vegetables,
-        nutsSeeds,
+        nutsseeds,
         liquids,
         powders,
         sweetners,
@@ -16,7 +16,7 @@ VALUES (
     '1 cup milk',
     'whey protein',
     'honey',
-    'oats',    
+    'oats'    
 ),
 (
     'Straberry Banana',
@@ -26,7 +26,7 @@ VALUES (
     '1 cup milk',
     'none',
     'none',
-    'none',
+    'none'
 ),
 (
     'Green Machine',
@@ -36,5 +36,5 @@ VALUES (
     '1 cup water',
     'none',
     'none',
-    'none',
-)
+    'none'
+);

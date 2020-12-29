@@ -1,11 +1,11 @@
 const SmoothiesService = {
     getAllSmoothies(knex) {
-        return knex.select('*').from('smoothies')
+        return knex.select('*').from('smoothieme_smoothies')
     },
     insertSmoothie(knex, newSmoothie) {
         return knex
             .insert(newSmoothie)
-            .into('smoothies')
+            .into('smoothieme_smoothies')
             .returning('*')
             .then(rows => {
                 return rows[0]
@@ -13,18 +13,18 @@ const SmoothiesService = {
     },
     getById(knex, id) {
         return knex
-            .from('smoothies')
+            .from('smoothieme_smoothies')
             .select('*')
             .where('id', id)
             .first()
     },
     deleteSmoothie(knex, id) {
-        return knex('smoothies')
+        return knex('smoothieme_smoothies')
         .where({ id })
         .delete()
     },
     updateSmoothie(knex, id, newSmoothieFields) {
-        return knex('smoothies')
+        return knex('smoothieme_smoothies')
         .where({ id })
         .update(newSmoothieFields)
     }

@@ -3,15 +3,15 @@ const express = require('express');
 const xss = require('xss');
 const SmoothiesService = require('./smoothies-service');
 
-const SmoothiesRouter = express.Router();
+const smoothiesRouter = express.Router();
 const jsonParser = express.json();
 
-const serializeRecipe = smoothies => ({
+const serializeSmoothie = smoothies => ({
     id: smoothies.id,
     title: xss(smoothies.title),
     fruit: xss(smoothies.fruit),
     vegetables: xss(smoothies.vegetables),
-    nutsSeeds: xss(smoothies.nutsSeeds),
+    nutsseeds: xss(smoothies.nutsseeds),
     liquids: xss(smoothies.liquids),
     powders: xss(smoothies.powders),
     sweetners: xss(smoothies.sweetners),
@@ -24,15 +24,15 @@ smoothiesRouter
     const knexInstance = req.app.get('db');
     SmoothiesService.getAllSmoothies(knexInstance)
     .then(smoothies => {
-        res.json(smoothies.map(serializeRecipe))
+        res.json(smoothies.map(serializeSmoothie))
     })
     .catch(next)
 })
 .post(jsonParser, (req, res, next) => {
-    const { title, fruit, vegetables, nutsSeeds, liquids, powders, sweetners, other } = req.body;
-    const newRecipe = { title, fruit, vegetables, nutsSeeds, liquids, powders, sweetners, other };
+    const { title, fruit, vegetables, nutsseeds, liquids, powders, sweetners, other } = req.body;
+    const newSmoothie = { title, fruit, vegetables, nutsseeds, liquids, powders, sweetners, other };
 
-    for (const [key, value] of Object.entries(newRecipe)) {
+    for (const [key, value] of Object.entries(newSmoothie)) {
         if (value == null) {
             return res.status(400).json({
                 error: { message:  `Missing '${key}' in request body` }
@@ -40,16 +40,16 @@ smoothiesRouter
         }
     }
     
-    //newRecipe.content = content
-    SmoothiesService.insertRecipe(
+    //newSmoothie.content = content
+    SmoothiesService.insertSmoothie(
         req.app.get('db'),
-        newRecipe
+        newSmoothie
     )
-    .then(recipe => {
+    .then(smoothie => {
         res
             .status(201)
-            .location(path.posix.join(req.originalUrl, `/${recipe.id}`))
-            .json(serializeRecipe(recipe))
+            .location(path.posix.join(req.originalUrl, `/${smoothie.id}`))
+            .json(serializeSmoothie(smoothie))
     })
     .catch(next)
 })
@@ -61,25 +61,25 @@ smoothiesRouter
         req.app.get('db'),
         req.params.id
     )
-    .then(recipe => {
-        if(!recipe) {
+    .then(smoothie => {
+        if(!smoothie) {
             return res.status(404).json({
-                error: { message: `Recipe doesn't exist` }
+                error: { message: `Smoothie doesn't exist` }
             })
         }
-        res.recipe = recipe
+        res.smoothie = smoothie
         next()
     })
     .catch(next)
 })
 .get((req, res, next) => {
-    res.json(serializeRecipe(res.recipe))
+    res.json(serializeSmoothie(res.smoothie))
 })
 .patch(jsonParser, (req, res, next) => {
-    const { title, fruit, vegetables, nutsSeeds, liquids, powders, sweetners, other } = req.body
-    const recipeToUpdate = { title, fruit, vegetables, nutsSeeds, liquids, powders, sweetners, other }
+    const { title, fruit, vegetables, nutsseeds, liquids, powders, sweetners, other } = req.body
+    const smoothieToUpdate = { title, fruit, vegetables, nutsseeds, liquids, powders, sweetners, other }
 
-    const numberOfValues = Object.values(recipeToUpdate).filter(Boolean).length
+    const numberOfValues = Object.values(smoothieToUpdate).filter(Boolean).length
     if(numberOfValues === 0) {
         return res.status(400).json({
             error: {
@@ -87,10 +87,10 @@ smoothiesRouter
             }
         })
     }
-    SmoothiesService.updateRecipe(
+    SmoothiesService.updateSmoothie(
         req.app.get('db'),
         req.params.id,
-        recipeToUpdate
+        smoothieToUpdate
     )
     .then(numRowsAffected => {
         res.status(204).end()
@@ -98,7 +98,7 @@ smoothiesRouter
     .catch(next)
 })
 .delete((req, res, next) => {
-    SmoothiesService.deleteRecipe(
+    SmoothiesService.deleteSmoothie(
         req.app.get('db'),
         req.params.id
     )
