@@ -5,6 +5,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
 const smoothiesRouter = require('./smoothies/smoothies-router');
+const favoritesRouter = require('./favorites/favorites-router');
 
 const app = express()
 
@@ -17,6 +18,7 @@ app.use(helmet())
 app.use(cors())
 
 app.use('/api/smoothies', smoothiesRouter),
+app.use('/api/favorites', favoritesRouter)
 
 app.get('/', (req, res) => {
      res.send('Hello, world!')
